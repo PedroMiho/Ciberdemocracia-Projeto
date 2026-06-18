@@ -181,7 +181,7 @@
   <!-- GRADE DE MATÉRIAS -->
   <div class="grade">
 
-    <button class="card-materia escrita" data-materia="escrita" data-nome="Escrita">
+    <button class="card-materia escrita" data-materia="escrita" data-nome="Letras">
       <div class="icone-circulo">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M14 44 L40 18 L48 26 L22 52 L12 54 Z" fill="#FF7675"/>
@@ -216,7 +216,7 @@
       <div class="nome-materia">Leitura</div>
     </button>
 
-    <button class="card-materia ortografia" data-materia="ortografia" data-nome="Ortografia">
+    <button class="card-materia ortografia" data-materia="ortografia" data-nome="Escrita">
       <div class="icone-circulo">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
           <text x="14" y="34" font-family="Baloo 2" font-size="26" font-weight="800" fill="#F0A500">A</text>
@@ -329,15 +329,15 @@
       await pausa(2000);
 
       apontarPara('matematica');
-      await falar('Se quiser estudar MATEMATICA clique aqui.');
+      await falar('Para estudar MATEMATICA clique aqui.');
       await pausa(2000);
 
       apontarPara('leitura');
-      await falar('Se quiser estudar a LEITURA clique aqui.');
+      await falar('Para estudar a LEITURA clique aqui.');
       await pausa(1500);
 
       apontarPara('ortografia');
-      await falar('Se quiser estudar a ESCRITA clique aqui.');
+      await falar('Para estudar a ESCRITA clique aqui.');
       await pausa(2000);
 
       esconderSeta();
