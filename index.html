@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vamos Brincar com o Pim!</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primaria: #6C5CE7; --primaria-esc: #5546c9;
+      --verde: #00B894; --verde-esc: #009975;
+      --amarelo: #FDCB6E; --azul: #74B9FF;
+      --texto: #4A4A68; --fundo-card: #FFFFFF;
+    }
+    * { font-family: 'Baloo 2', cursive; box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 20% 20%, #E8E4FF 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, #D4F1FF 0%, transparent 50%),
+        linear-gradient(160deg, #F5F3FF 0%, #EBF7FF 100%);
+      min-height: 100vh; margin: 0;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+
+    /* Formas suaves decorativas no fundo */
+    .forma { position: absolute; border-radius: 50%; filter: blur(2px); opacity: 0.25; }
+    .f1 { width: 200px; height: 200px; background: #A29BFE; top: -60px; left: -60px; }
+    .f2 { width: 160px; height: 160px; background: #74B9FF; bottom: -50px; right: -40px; }
+    .f3 { width: 100px; height: 100px; background: #FDCB6E; top: 60%; left: 8%; }
+
+    .card-assistente {
+      position: relative; z-index: 2;
+      border-radius: 36px;
+      box-shadow: 0 24px 60px rgba(108, 92, 231, 0.22);
+      max-width: 460px; width: 92%;
+      background: var(--fundo-card);
+      padding: 40px 32px; text-align: center;
+    }
+
+    /* Mascote container */
+    .mascote-circulo {
+      width: 160px; height: 160px; margin: 0 auto 24px;
+      border-radius: 50%;
+      background: linear-gradient(160deg, #A29BFE 0%, #6C5CE7 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 30px rgba(108, 92, 231, 0.4);
+      position: relative;
+    }
+    .mascote-circulo::before {
+      content: ''; position: absolute; inset: -8px;
+      border-radius: 50%; border: 4px solid rgba(108,92,231,0.15);
+    }
+    .mascote {
+      width: 100px; height: 100px;
+      animation: flutua 3.5s ease-in-out infinite;
+    }
+    @keyframes flutua {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-8px); }
+    }
+    .mascote.falando { animation: pula 0.45s ease-in-out infinite; }
+    @keyframes pula {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%     { transform: translateY(-5px) scale(1.06); }
+    }
+
+    .balao-fala {
+      position: relative; background: #F4F2FF;
+      border-radius: 24px; padding: 22px 20px;
+      font-size: 23px; font-weight: 600; color: var(--texto);
+      min-height: 90px; line-height: 1.35;
+      display: flex; align-items: center; justify-content: center;
+      animation: aparece 0.4s ease; margin-bottom: 24px;
+    }
+    .balao-fala::after {
+      content: ''; position: absolute; top: -14px; left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 14px 14px 14px; border-style: solid;
+      border-color: transparent transparent #F4F2FF transparent;
+    }
+    @keyframes aparece {
+      from { opacity: 0; transform: scale(0.9) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .input-nome {
+      width: 100%; border: 3px solid #E0DBFF; border-radius: 20px;
+      padding: 16px; font-size: 23px; text-align: center;
+      font-weight: 600; color: var(--texto); outline: none;
+      margin-bottom: 20px; transition: all 0.2s;
+    }
+    .input-nome:focus { border-color: var(--primaria); box-shadow: 0 0 0 4px rgba(108,92,231,0.15); }
+
+    .btn-fofo {
+      width: 100%; border: none; border-radius: 20px; padding: 18px;
+      font-size: 24px; font-weight: 700; color: #fff; cursor: pointer;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.12); transition: all 0.12s ease;
+    }
+    .btn-fofo:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.12); }
+    .btn-pronto  { background: linear-gradient(135deg, #00CEC9, #00B894); }
+    .btn-comecar {
+      width: auto; padding: 20px 50px; font-size: 28px;
+      background: linear-gradient(135deg, #FDCB6E, #F0A500);
+      animation: pulsa 1.4s ease-in-out infinite;
+    }
+    @keyframes pulsa { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+
+    /* destaque quando o Pim lembra de clicar */
+    .destaque { animation: balanca 0.5s ease; }
+    @keyframes balanca {
+      0%,100%{transform:translateX(0);}
+      25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}
+    }
+
+    #telaInicio {
+      position: fixed; inset: 0; z-index: 10;
+      background: linear-gradient(160deg, #6C5CE7 0%, #74B9FF 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+    }
+    #telaInicio .mascote-circulo {
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.18);
+    }
+    #telaInicio .mascote { width: 130px; height: 130px; }
+    #telaInicio h1 { color:#fff; font-size:44px; margin: 0 0 30px; text-shadow:0 2px 8px rgba(0,0,0,0.2); }
+    .escondido { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="forma f1"></div>
+  <div class="forma f2"></div>
+  <div class="forma f3"></div>
+
+  <!-- Mascote SVG reutilizável -->
+  <template id="svgPim">
+    <svg class="mascote" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- antena -->
+      <line x1="50" y1="18" x2="50" y2="6" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="50" cy="5" r="5" fill="#FDCB6E"/>
+      <!-- cabeça -->
+      <rect x="20" y="18" width="60" height="50" rx="22" fill="#fff"/>
+      <!-- olhos -->
+      <circle cx="38" cy="42" r="8" fill="#6C5CE7"/>
+      <circle cx="62" cy="42" r="8" fill="#6C5CE7"/>
+      <circle cx="40" cy="40" r="3" fill="#fff"/>
+      <circle cx="64" cy="40" r="3" fill="#fff"/>
+      <!-- bochechas -->
+      <circle cx="28" cy="54" r="5" fill="#FFB8C4" opacity="0.7"/>
+      <circle cx="72" cy="54" r="5" fill="#FFB8C4" opacity="0.7"/>
+      <!-- sorriso -->
+      <path d="M42 56 Q50 62 58 56" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <!-- corpo -->
+      <rect x="34" y="68" width="32" height="22" rx="10" fill="#A29BFE"/>
+      <circle cx="50" cy="79" r="4" fill="#FDCB6E"/>
+    </svg>
+  </template>
+
+  <!-- TELA DE BOAS-VINDAS -->
+  <div id="telaInicio">
+    <div class="mascote-circulo" id="circuloInicio"></div>
+    <h1>Olá! 👋</h1>
+    <button class="btn-fofo btn-comecar" id="btnComecar">▶️ Vamos começar!</button>
+  </div>
+
+  <!-- CARD PRINCIPAL -->
+  <div class="card-assistente escondido" id="cardPrincipal">
+    <div class="mascote-circulo" id="circuloPrincipal"></div>
+    <div class="balao-fala" id="falaIA">...</div>
+    <input type="text" class="input-nome escondido" id="nomeAluno"
+           placeholder="Seu nome" maxlength="20" autocomplete="off">
+    <button class="btn-fofo btn-pronto escondido" id="btnPronto">✅ Pronto!</button>
+  </div>
+
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+  <script>
+    // ===== CREDENCIAIS (substitua pela sua chave NOVA) =====
+    const AZURE_KEY    = "7YseDwXlpfBRO2meYxBwULsbO5mNhv4uqxdUhXtwef1jRBmcGzXeJQQJ99CFACHrzpqXJ3w3AAAYACOG87Cv";
+    const AZURE_REGION = "northcentralus";
+
+    // 🎙️ Voz do Pim
+    const VOZ = "pt-BR-ThalitaNeural";
+    // ========================================================
+
+    // Insere o mascote SVG nos dois círculos
+    const tpl = document.getElementById('svgPim');
+    document.getElementById('circuloInicio').appendChild(tpl.content.cloneNode(true));
+    document.getElementById('circuloPrincipal').appendChild(tpl.content.cloneNode(true));
+
+    const telaInicio    = document.getElementById('telaInicio');
+    const cardPrincipal = document.getElementById('cardPrincipal');
+    const falaIA        = document.getElementById('falaIA');
+    const inputNome     = document.getElementById('nomeAluno');
+    const btnPronto     = document.getElementById('btnPronto');
+    const btnComecar    = document.getElementById('btnComecar');
+    const mascotePrincipal = document.querySelector('#circuloPrincipal .mascote');
+
+    let timerLembrete = null; // ⏰ controla o lembrete de inatividade
+
+    function falar(texto) {
+      return new Promise(resolve => {
+        falaIA.textContent = texto;
+        mascotePrincipal.classList.add('falando');
+
+        const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_KEY, AZURE_REGION);
+        const synthesizer  = new SpeechSDK.SpeechSynthesizer(speechConfig);
+        const ssml = `
+          <speak version='1.0' xml:lang='pt-BR'>
+            <voice name='${VOZ}'>
+              <prosody rate='0%' pitch='+6%'>${texto}</prosody>
+            </voice>
+          </speak>`;
+        synthesizer.speakSsmlAsync(
+          ssml,
+          () => { synthesizer.close(); mascotePrincipal.classList.remove('falando'); resolve(); },
+          () => { synthesizer.close(); mascotePrincipal.classList.remove('falando'); resolve(); }
+        );
+      });
+    }
+
+    const esperar = ms => new Promise(r => setTimeout(r, ms));
+
+    // ⏰ Inicia/reinicia o lembrete (8 segundos sem clicar)
+    function iniciarLembrete() {
+      cancelarLembrete();
+      timerLembrete = setTimeout(async () => {
+        if (inputNome.value.trim() !== '') {
+          btnPronto.classList.add('destaque');
+          await falar('Quando terminar de escrever seu nome, é só clicar no botão verde abaixo! ');
+          setTimeout(() => btnPronto.classList.remove('destaque'), 600);
+          iniciarLembrete(); // continua lembrando se ela ainda não clicou
+        }
+      }, 8000); // ⬅️ tempo em milissegundos (8s)
+    }
+    function cancelarLembrete() {
+      if (timerLembrete) { clearTimeout(timerLembrete); timerLembrete = null; }
+    }
+
+    async function iniciarHistoria() {
+      telaInicio.classList.add('escondido');
+      cardPrincipal.classList.remove('escondido');
+
+      await falar('Oi! Eu sou o Pim! ');
+      await esperar(1500);
+      await falar('Que alegria ter você aqui!');
+      await esperar(1500);
+      await falar('Para começarmos, como você se chama?');
+
+      inputNome.classList.remove('escondido');
+      btnPronto.classList.remove('escondido');
+      inputNome.focus();
+    }
+
+    btnComecar.addEventListener('click', iniciarHistoria);
+
+    // ⏰ Sempre que ela digitar, (re)começa a contagem do lembrete
+    inputNome.addEventListener('input', () => {
+      if (inputNome.value.trim() !== '') iniciarLembrete();
+      else cancelarLembrete();
+    });
+
+    btnPronto.addEventListener('click', async () => {
+      cancelarLembrete(); // para o lembrete ao clicar
+      const nome = inputNome.value.trim();
+      if (nome === '') {
+        await falar('Vamos escrever o seu nome primeiro!');
+        inputNome.focus();
+        return;
+      }
+      localStorage.setItem('nomeAluno', nome);
+      await falar(`Seja bem-vindo, ${nome}!`);
+      await esperar(1500);
+      await falar('Agora vamos aprender juntos!');
+      await esperar(1500);
+      setTimeout(() => window.location.href = 'paginas/competencias.html', 1500);
+    });
+  </script>
+
+</body>
+</html>
