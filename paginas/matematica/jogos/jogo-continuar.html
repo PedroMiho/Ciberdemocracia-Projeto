@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continue Contando!</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primaria: #6C5CE7;
+            --texto: #4A4A68;
+        }
+
+        * {
+            font-family: 'Baloo 2', cursive;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 20% 20%, #E8E4FF 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, #D4F1FF 0%, transparent 50%),
+                linear-gradient(160deg, #F5F3FF 0%, #EBF7FF 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao-som,
+        .botao-voltar {
+            position: fixed;
+            top: 18px;
+            z-index: 500;
+            border: none;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(108, 92, 231, 0.25);
+            transition: transform 0.18s ease;
+        }
+
+        .botao-som {
+            right: 18px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao-som svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .botao-som.mudo {
+            background: #FFE3E1;
+        }
+
+        .botao-voltar {
+            left: 18px;
+            height: 56px;
+            padding: 0 22px 0 16px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primaria);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .botao-som:hover,
+        .botao-voltar:hover {
+            transform: scale(1.06);
+        }
+
+        .botao-som:active,
+        .botao-voltar:active {
+            transform: scale(0.92);
+        }
+
+        .botao-voltar svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .pim-circulo {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #A29BFE 0%, #6C5CE7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.35);
+            margin-bottom: 10px;
+        }
+
+        .pim-circulo svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .pim-circulo.falando svg {
+            animation: pula 0.45s ease-in-out infinite;
+        }
+
+        @keyframes pula {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.08);
+            }
+        }
+
+        .palco {
+            background: #fff;
+            border-radius: 36px;
+            padding: 28px 24px 32px;
+            box-shadow: 0 16px 44px rgba(108, 92, 231, 0.18);
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .titulo-jogo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primaria);
+        }
+
+        .numero-grande {
+            font-size: 120px;
+            font-weight: 800;
+            color: var(--primaria);
+            line-height: 1;
+        }
+
+        .numero-grande.aparece {
+            animation: surge 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes surge {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .maos {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            min-height: 150px;
+            align-items: flex-end;
+        }
+
+        .mao svg {
+            width: 140px;
+            height: auto;
+        }
+
+        @media (max-width: 480px) {
+            .numero-grande {
+                font-size: 90px;
+            }
+
+            .mao svg {
+                width: 110px;
+            }
+        }
+
+        .progresso {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 320px;
+        }
+
+        .bolinha {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #E8E4FF;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        /* número de PARTIDA já preenchido em outra cor */
+        .bolinha.inicial {
+            background: #A29BFE;
+        }
+
+        .bolinha.ativa {
+            background: #FDCB6E;
+            transform: scale(1.25);
+        }
+
+        .controles {
+            display: flex;
+            gap: 14px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 26px;
+            padding: 14px 28px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transition: transform 0.16s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+            transform: none;
+        }
+
+        .btn-iniciar {
+            background: linear-gradient(160deg, #00B894 0%, #009975 100%);
+        }
+
+        .btn-jafalei {
+            background: linear-gradient(160deg, #74B9FF 0%, #0984E3 100%);
+        }
+
+        .btn-repetir {
+            background: linear-gradient(160deg, #A29BFE 0%, #6C5CE7 100%);
+        }
+
+        .mensagem {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--texto);
+            min-height: 30px;
+        }
+
+        .microfone {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .microfone.ativo {
+            display: flex;
+        }
+
+        .mic-bolha {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #FFE3E1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 0 rgba(255, 118, 117, 0.6);
+        }
+
+        .mic-bolha.ouvindo {
+            animation: pulsoMic 1.2s ease-out infinite;
+            background: #FF7675;
+        }
+
+        .mic-bolha svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        @keyframes pulsoMic {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 118, 117, 0.6);
+            }
+
+            100% {
+                box-shadow: 0 0 0 22px rgba(255, 118, 117, 0);
+            }
+        }
+
+        .mic-texto {
+            font-size: 16px;
+            font-weight: 600;
+            color: #8A87A8;
+        }
+
+        .festa {
+            font-size: 56px;
+            display: none;
+        }
+
+        .festa.aparece {
+            display: block;
+            animation: festa 0.8s ease infinite alternate;
+        }
+
+        @keyframes festa {
+            0% {
+                transform: scale(1) rotate(-6deg);
+            }
+
+            100% {
+                transform: scale(1.15) rotate(6deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="botao-voltar" id="botaoVoltar" title="Voltar">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 5 L8 12 L15 19" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+        Voltar
+    </button>
+
+    <button class="botao-som" id="botaoSom" title="Ligar ou desligar a voz"></button>
+
+    <div class="pim-circulo" id="pimCirculo">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="18" x2="50" y2="6" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+            <circle cx="50" cy="5" r="5" fill="#FDCB6E" />
+            <rect x="20" y="18" width="60" height="50" rx="22" fill="#fff" />
+            <circle cx="38" cy="42" r="8" fill="#6C5CE7" />
+            <circle cx="62" cy="42" r="8" fill="#6C5CE7" />
+            <circle cx="40" cy="40" r="3" fill="#fff" />
+            <circle cx="64" cy="40" r="3" fill="#fff" />
+            <path d="M42 56 Q50 62 58 56" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round" fill="none" />
+            <rect x="34" y="68" width="32" height="22" rx="10" fill="#A29BFE" />
+            <circle cx="50" cy="79" r="4" fill="#FDCB6E" />
+        </svg>
+    </div>
+
+    <div class="palco">
+
+        <div class="titulo-jogo">Continue Contando! ➡️</div>
+
+        <div class="numero-grande" id="numeroGrande">?</div>
+
+        <div class="maos" id="maos">
+            <div class="mao" id="maoEsquerda"></div>
+            <div class="mao" id="maoDireita"></div>
+        </div>
+
+        <div class="festa" id="festa">🎉🌟🎉</div>
+
+        <div class="mensagem" id="mensagem">Eu começo o número, você continua contando!</div>
+
+        <div class="microfone" id="microfone">
+            <div class="mic-bolha" id="micBolha">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="9" y="3" width="6" height="11" rx="3" fill="#fff" />
+                    <path d="M6 11 a6 6 0 0 0 12 0" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" />
+                    <line x1="12" y1="17" x2="12" y2="21" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+                    <line x1="8" y1="21" x2="16" y2="21" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+            <div class="mic-texto" id="micTexto">Fale o número!</div>
+        </div>
+
+        <div class="progresso" id="progresso"></div>
+
+        <div class="controles">
+            <button class="btn btn-iniciar" id="btnIniciar">▶️ Começar</button>
+            <button class="btn btn-jafalei" id="btnJaFalei" style="display:none;">✅ Já falei!</button>
+            <button class="btn btn-repetir" id="btnRepetir" style="display:none;">🔁 Outro número</button>
+        </div>
+
+    </div>
+
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+    <script>
+        // ===== CREDENCIAIS (TROQUE pela sua chave!) =====
+        const AZURE_KEY = "COLE_SUA_CHAVE_AQUI";
+        const AZURE_REGION = "northcentralus";
+        const VOZ = "pt-BR-ThalitaNeural";
+        // ================================================
+
+        const pimCirculo = document.getElementById('pimCirculo');
+        const botaoSom = document.getElementById('botaoSom');
+        const botaoVoltar = document.getElementById('botaoVoltar');
+        const numeroGrande = document.getElementById('numeroGrande');
+        const maoEsquerda = document.getElementById('maoEsquerda');
+        const maoDireita = document.getElementById('maoDireita');
+        const mensagem = document.getElementById('mensagem');
+        const progressoEl = document.getElementById('progresso');
+        const festa = document.getElementById('festa');
+        const btnIniciar = document.getElementById('btnIniciar');
+        const btnJaFalei = document.getElementById('btnJaFalei');
+        const btnRepetir = document.getElementById('btnRepetir');
+        const microfone = document.getElementById('microfone');
+        const micBolha = document.getElementById('micBolha');
+        const micTexto = document.getElementById('micTexto');
+
+        let somLigado = localStorage.getItem('somLigado') !== 'false';
+        let rodando = false;
+        let reconhecedor = null;
+        let aguardandoResposta = false;
+        let numeroInicial = 1;
+
+        const NOMES = ['', 'um', 'dois', 'três', 'quatro', 'cinco',
+            'seis', 'sete', 'oito', 'nove', 'dez'];
+
+        const VARIACOES = {
+            1: ['um', 'hum', 'umm', '1', 'un'],
+            2: ['dois', 'dóis', 'doi', '2', 'dos'],
+            3: ['três', 'tres', 'tréis', 'treis', '3'],
+            4: ['quatro', 'catro', 'quato', '4'],
+            5: ['cinco', 'sinco', 'cinquo', '5'],
+            6: ['seis', 'seish', 'sêis', '6'],
+            7: ['sete', 'séte', 'sét', '7'],
+            8: ['oito', 'oitu', 'oit', '8'],
+            9: ['nove', 'nóve', 'nov', '9'],
+            10: ['dez', 'dês', 'des', 'deis', '10']
+        };
+
+        const ICONE_SOM_LIGADO = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#6C5CE7"/>
+        <path d="M16 9 a4 4 0 0 1 0 6" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M18.5 6.5 a8 8 0 0 1 0 11" stroke="#A29BFE" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>`;
+        const ICONE_SOM_MUDO = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#D63031"/>
+        <line x1="16" y1="9" x2="22" y2="15" stroke="#D63031" stroke-width="2" stroke-linecap="round"/>
+        <line x1="22" y1="9" x2="16" y2="15" stroke="#D63031" stroke-width="2" stroke-linecap="round"/>
+      </svg>`;
+
+        function atualizarBotaoSom() {
+            botaoSom.innerHTML = somLigado ? ICONE_SOM_LIGADO : ICONE_SOM_MUDO;
+            botaoSom.classList.toggle('mudo', !somLigado);
+        }
+        atualizarBotaoSom();
+        botaoSom.addEventListener('click', () => {
+            somLigado = !somLigado;
+            localStorage.setItem('somLigado', somLigado);
+            atualizarBotaoSom();
+        });
+
+        function pausa(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function falar(texto) {
+            return new Promise(resolve => {
+                if (!somLigado) { resolve(); return; }
+                pimCirculo.classList.add('falando');
+                const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_KEY, AZURE_REGION);
+                speechConfig.speechSynthesisVoiceName = VOZ;
+                const synth = new SpeechSDK.SpeechSynthesizer(speechConfig);
+                let fim = false;
+                function finalizar() {
+                    if (fim) return; fim = true;
+                    pimCirculo.classList.remove('falando');
+                    try { synth.close(); } catch (e) { }
+                    resolve();
+                }
+                const ssml = `
+          <speak version='1.0' xml:lang='pt-BR'>
+            <voice name='${VOZ}'>
+              <prosody rate='-5%' pitch='+6%'>${texto}</prosody>
+            </voice>
+          </speak>`;
+                synth.speakSsmlAsync(ssml,
+                    (r) => {
+                        if (r.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted)
+                            setTimeout(finalizar, r.audioDuration / 10000 + 250);
+                        else finalizar();
+                    },
+                    (e) => { console.error(e); finalizar(); }
+                );
+            });
+        }
+
+        function ouvirNumero() {
+            return new Promise(resolve => {
+                if (!somLigado) { resolve(null); return; }
+                const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_KEY, AZURE_REGION);
+                speechConfig.speechRecognitionLanguage = 'pt-BR';
+                const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+                reconhecedor = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+                micBolha.classList.add('ouvindo');
+                micTexto.textContent = 'Estou ouvindo... 👂';
+                reconhecedor.recognizeOnceAsync(
+                    (result) => {
+                        micBolha.classList.remove('ouvindo');
+                        let texto = '';
+                        if (result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
+                            texto = (result.text || '').toLowerCase().replace(/[.!?,]/g, '').trim();
+                        }
+                        try { reconhecedor.close(); } catch (e) { }
+                        reconhecedor = null;
+                        resolve(texto);
+                    },
+                    (err) => {
+                        micBolha.classList.remove('ouvindo');
+                        try { reconhecedor.close(); } catch (e) { }
+                        reconhecedor = null;
+                        console.error('Erro mic:', err);
+                        resolve(null);
+                    }
+                );
+            });
+        }
+
+        function acertou(textoFalado, numero) {
+            if (!textoFalado) return false;
+            const variacoes = VARIACOES[numero] || [String(numero)];
+            return variacoes.some(v => textoFalado.includes(v));
+        }
+
+        /* ====== MÃO (mesma versão corrigida) ====== */
+        function svgMao(dedosLevantados, espelhada) {
+            const FILL = '#FFCBA4';
+            const STROKE = '#F0A878';
+            const sw = 2.5;
+            const dedosBase = [
+                { cx: 72, pontaCima: 48, pontaBaixo: 120 },
+                { cx: 92, pontaCima: 34, pontaBaixo: 120 },
+                { cx: 112, pontaCima: 40, pontaBaixo: 120 },
+                { cx: 132, pontaCima: 58, pontaBaixo: 120 },
+            ];
+            const w = 16, r = 8;
+            const quantosRetos = dedosLevantados >= 5 ? 4 : dedosLevantados;
+            const ordem = [3, 2, 1, 0];
+            const ativos = new Set(ordem.slice(0, quantosRetos));
+            let dedos = '';
+            dedosBase.forEach((d, i) => {
+                const reto = ativos.has(i);
+                const topo = reto ? d.pontaCima : d.pontaBaixo;
+                const altura = (140 - topo) + 8;
+                dedos += `<rect x="${d.cx - r}" y="${topo}" width="${w}" height="${altura}"
+                                rx="${r}" fill="${FILL}" stroke="${STROKE}" stroke-width="${sw}"/>`;
+            });
+            const polegarAberto = dedosLevantados >= 5;
+            let polegar;
+            if (polegarAberto) {
+                polegar = `<rect x="14" y="118" width="18" height="54" rx="9"
+                          fill="${FILL}" stroke="${STROKE}" stroke-width="${sw}"
+                          transform="rotate(-40 23 145)"/>`;
+            } else {
+                polegar = `<ellipse cx="48" cy="150" rx="13" ry="16"
+                          fill="#FFB98A" stroke="${STROKE}" stroke-width="${sw}"/>`;
+            }
+            const palma = `<rect x="58" y="128" width="84" height="62" rx="28"
+                                 fill="${FILL}" stroke="${STROKE}" stroke-width="${sw}"/>`;
+            const conteudo = dedos + polegar + palma;
+            const flip = espelhada ? `transform="scale(-1,1) translate(-185,0)"` : '';
+            return `<svg viewBox="0 0 185 205" xmlns="http://www.w3.org/2000/svg"><g ${flip}>${conteudo}</g></svg>`;
+        }
+
+        function mostrarMaos(n) {
+            const naMaoEsquerda = Math.min(n, 5);
+            const naMaoDireita = Math.max(0, n - 5);
+            maoEsquerda.innerHTML = svgMao(naMaoEsquerda, false);
+            maoDireita.innerHTML = naMaoDireita > 0 ? svgMao(naMaoDireita, true) : '';
+        }
+
+        function criarBolinhas(inicial) {
+            progressoEl.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const b = document.createElement('div');
+                b.className = 'bolinha';
+                if (i <= inicial) b.classList.add('inicial'); // já preenchido
+                b.dataset.n = i;
+                progressoEl.appendChild(b);
+            }
+        }
+        function acenderBolinha(n) {
+            const b = progressoEl.querySelector(`.bolinha[data-n="${n}"]`);
+            if (b) { b.classList.remove('inicial'); b.classList.add('ativa'); }
+        }
+
+        function mostrarNumero(n) {
+            numeroGrande.textContent = n;
+            numeroGrande.classList.remove('aparece');
+            void numeroGrande.offsetWidth;
+            numeroGrande.classList.add('aparece');
+        }
+
+        /* ====== Pede o PRÓXIMO número (continuação) ====== */
+        async function pedirProximo(n) {
+            aguardandoResposta = true;
+            microfone.classList.add('ativo');
+            btnJaFalei.style.display = 'flex';
+
+            let acertouNum = false;
+            let tentativas = 0;
+
+            while (!acertouNum && rodando && aguardandoResposta) {
+                tentativas++;
+                if (tentativas === 1) {
+                    await falar(`Qual vem depois? Fale: ${NOMES[n]}.`);
+                } else {
+                    await falar(`Tente de novo. O próximo é: ${NOMES[n]}.`);
+                }
+                if (!rodando || !aguardandoResposta) break;
+
+                micTexto.textContent = 'Fale o próximo número! 🎤';
+                const fala = await ouvirNumero();
+                if (!aguardandoResposta) { acertouNum = true; break; }
+
+                if (acertou(fala, n)) {
+                    acertouNum = true;
+                } else {
+                    micTexto.textContent = 'Quase! Vamos tentar 💜';
+                    await falar('Quase! Vamos tentar mais uma vez.');
+                    await pausa(300);
+                }
+            }
+
+            microfone.classList.remove('ativo');
+            micBolha.classList.remove('ouvindo');
+            btnJaFalei.style.display = 'none';
+            aguardandoResposta = false;
+
+            if (acertouNum && rodando) {
+                await falar('Isso! Muito bem!');
+                await pausa(250);
+            }
+            return acertouNum;
+        }
+
+        /* ====== Loop principal ====== */
+        async function jogar() {
+            rodando = true;
+            btnIniciar.disabled = true;
+            btnRepetir.style.display = 'none';
+            festa.classList.remove('aparece');
+
+            // Sorteia número inicial entre 2 e 8 (sempre sobra o que contar)
+            numeroInicial = Math.floor(Math.random() * 7) + 2; // 2 a 8
+
+            criarBolinhas(numeroInicial);
+            mostrarMaos(numeroInicial);
+            mostrarNumero(numeroInicial);
+            mensagem.textContent = `Começamos no número ${numeroInicial}!`;
+
+            await falar(`Vamos começar no número ${NOMES[numeroInicial]}. Agora você continua contando até dez!`);
+            await pausa(500);
+
+            for (let n = numeroInicial + 1; n <= 10; n++) {
+                if (!rodando) return;
+
+                const ok = await pedirProximo(n);
+                if (!rodando) return;
+                if (!ok) return;
+
+                // só mostra DEPOIS de acertar (a criança disse o número)
+                mostrarNumero(n);
+                mostrarMaos(n);
+                acenderBolinha(n);
+                mensagem.textContent = `Chegou no ${n}!`;
+            }
+
+            mensagem.textContent = 'Você chegou até o 10! Incrível! 🎉';
+            festa.classList.add('aparece');
+            await falar('Parabéns! Você continuou a contagem até dez! Você é demais!');
+
+            localStorage.setItem('jogo_continuar_concluido', 'true');
+
+            rodando = false;
+            btnRepetir.style.display = 'flex';
+            btnIniciar.disabled = false;
+        }
+
+        btnIniciar.addEventListener('click', () => { if (!rodando) jogar(); });
+        btnRepetir.addEventListener('click', () => jogar());
+
+        btnJaFalei.addEventListener('click', () => {
+            aguardandoResposta = false;
+            if (reconhecedor) { try { reconhecedor.close(); } catch (e) { } reconhecedor = null; }
+        });
+
+        botaoVoltar.addEventListener('click', () => {
+            rodando = false;
+            aguardandoResposta = false;
+            if (reconhecedor) { try { reconhecedor.close(); } catch (e) { } }
+            window.location.href = '../paginamatematica.html';
+        });
+
+        // estado inicial
+        criarBolinhas(0);
+        mostrarMaos(0);
+        numeroGrande.textContent = '?';
+    </script>
+
+</body>
+
+</html>
