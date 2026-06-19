@@ -96,6 +96,43 @@
       }
     }
 
+    /* 🔇 Botão de som (canto superior) */
+    .botao-som {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 500;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(108, 92, 231, 0.25);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .botao-som:hover {
+      transform: scale(1.08);
+      box-shadow: 0 10px 24px rgba(108, 92, 231, 0.35);
+    }
+
+    .botao-som:active {
+      transform: scale(0.92);
+    }
+
+    .botao-som svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .botao-som.mudo {
+      background: #FFE3E1;
+    }
+
     /* Cabeçalho com o Pim */
     .topo {
       display: flex;
@@ -348,6 +385,9 @@
 
 <body>
 
+  <!-- 🔇 Botão Ligar/Desligar som -->
+  <button class="botao-som" id="botaoSom" title="Ligar ou desligar a voz"></button>
+
   <!-- Tela "Toque para começar" -->
   <div class="tela-inicio" id="telaInicio">
     <div class="pim-grande">
@@ -451,11 +491,42 @@
     const telaInicio = document.getElementById('telaInicio');
     const botaoMic = document.getElementById('botaoMic');
     const textoMic = document.getElementById('textoMic');
+    const botaoSom = document.getElementById('botaoSom');
     const nome = localStorage.getItem('nomeAluno');
 
     // 🔒 TRAVAS
     let ouvindo = false;
     let navegando = false;
+
+    // 🔇 Estado do som (salvo no navegador). Padrão: ligado
+    let somLigado = localStorage.getItem('somLigado') !== 'false';
+
+    const ICONE_SOM_LIGADO = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#6C5CE7"/>
+        <path d="M16 9 a4 4 0 0 1 0 6" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M18.5 6.5 a8 8 0 0 1 0 11" stroke="#A29BFE" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>`;
+
+    const ICONE_SOM_MUDO = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#D63031"/>
+        <line x1="16" y1="9" x2="22" y2="15" stroke="#D63031" stroke-width="2" stroke-linecap="round"/>
+        <line x1="22" y1="9" x2="16" y2="15" stroke="#D63031" stroke-width="2" stroke-linecap="round"/>
+      </svg>`;
+
+    function atualizarBotaoSom() {
+      botaoSom.innerHTML = somLigado ? ICONE_SOM_LIGADO : ICONE_SOM_MUDO;
+      botaoSom.classList.toggle('mudo', !somLigado);
+      botaoSom.title = somLigado ? 'Desligar a voz' : 'Ligar a voz';
+    }
+    atualizarBotaoSom();
+
+    botaoSom.addEventListener('click', () => {
+      somLigado = !somLigado;
+      localStorage.setItem('somLigado', somLigado);
+      atualizarBotaoSom();
+    });
 
     if (nome) {
       document.getElementById('saudacao').textContent = `O que vamos aprender, ${nome}?`;
@@ -463,9 +534,16 @@
 
     function pausa(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    // ✅ FALA QUE AGUARDA O ÁUDIO TERMINAR DE TOCAR
+    // ✅ FALA QUE AGUARDA O ÁUDIO TERMINAR DE TOCAR (respeita modo silencioso)
     function falar(texto) {
       return new Promise(resolve => {
+
+        // 🔇 modo silencioso: não fala, resolve na hora
+        if (!somLigado) {
+          resolve();
+          return;
+        }
+
         pimCirculo.classList.add('falando');
 
         const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_KEY, AZURE_REGION);
@@ -493,10 +571,9 @@
           ssml,
           (result) => {
             if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
-              // ⏳ espera o áudio TOCAR todo (audioDuration vem em ticks de 100ns)
               const duracaoMs = result.audioDuration / 10000;
               console.log('🔊 Duração do áudio:', Math.round(duracaoMs), 'ms');
-              setTimeout(finalizar, duracaoMs + 300); // +300ms de folga
+              setTimeout(finalizar, duracaoMs + 300);
             } else {
               console.warn('Áudio não completou:', result.reason);
               finalizar();
@@ -553,19 +630,15 @@
 
     // ✅ Aguarda a fala TERMINAR antes de ir para a página
     async function irParaMateria(materia, nomeMateria) {
-      if (navegando) return; // evita chamada dupla (clique + voz)
+      if (navegando) return;
       navegando = true;
 
       localStorage.setItem('materiaEscolhida', materia);
       esconderSeta();
 
-      // 🗣️ espera o áudio terminar de tocar (a função falar já aguarda)
       await falar(`Você escolheu ${nomeMateria}! Vamos lá!`);
-
-      // 😊 pequena pausa para a criança processar
       await pausa(600);
 
-      // 🚀 só agora navega
       window.location.href = `${materia}/pagina${materia}.html`;
     }
 
@@ -609,7 +682,6 @@
           if (escolha) {
             textoMic.textContent = `✅ ${escolha.nome}!`;
             apontarPara(escolha.materia);
-            // ✅ irParaMateria cuida da fala + navegação (com await!)
             await irParaMateria(escolha.materia, escolha.nome);
           } else {
             textoMic.textContent = '🎤 Fale a matéria';
