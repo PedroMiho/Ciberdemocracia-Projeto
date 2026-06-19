@@ -489,7 +489,7 @@
 
       await falar(`Vamos jogar ${card.dataset.nome}!`);
       await pausa(400);
-      window.location.href = card.dataset.link;
+      window.location.href = `jogos/${card.dataset.link}`;
     }
 
     document.querySelectorAll('.card-jogo').forEach(card => {
