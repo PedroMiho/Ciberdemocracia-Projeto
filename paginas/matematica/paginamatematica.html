@@ -249,14 +249,29 @@
     }
 
     /* Cores por jogo */
-    .jogo-contar .icone-circulo { background: #FFE3E1; }
-    .jogo-contar { border-bottom: 6px solid #FF7675; }
+    .jogo-contar .icone-circulo {
+      background: #FFE3E1;
+    }
 
-    .jogo-continuar .icone-circulo { background: #E0F7EF; }
-    .jogo-continuar { border-bottom: 6px solid #00B894; }
+    .jogo-contar {
+      border-bottom: 6px solid #FF7675;
+    }
 
-    .jogo-quantos .icone-circulo { background: #E8E4FF; }
-    .jogo-quantos { border-bottom: 6px solid #6C5CE7; }
+    .jogo-continuar .icone-circulo {
+      background: #E0F7EF;
+    }
+
+    .jogo-continuar {
+      border-bottom: 6px solid #00B894;
+    }
+
+    .jogo-quantos .icone-circulo {
+      background: #E8E4FF;
+    }
+
+    .jogo-quantos {
+      border-bottom: 6px solid #6C5CE7;
+    }
 
     /* Estrelinha de "concluído" (opcional) */
     .estrela-feito {
@@ -278,8 +293,7 @@
   <!-- ⬅️ Voltar -->
   <button class="botao-voltar" id="botaoVoltar" title="Voltar">
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 5 L8 12 L15 19" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round"
-        stroke-linejoin="round" />
+      <path d="M15 5 L8 12 L15 19" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
     Voltar
   </button>
@@ -315,8 +329,7 @@
   <div class="grade">
 
     <!-- Jogo 1: Contar até 10 -->
-    <button class="card-jogo jogo-contar" data-jogo="contar" data-nome="Contar até 10"
-      data-link="jogo-contar.html">
+    <button class="card-jogo jogo-contar" data-jogo="contar" data-nome="Contar até 10" data-link="jogo-contar.html">
       <span class="estrela-feito">⭐</span>
       <div class="icone-circulo">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -337,21 +350,21 @@
       <span class="estrela-feito">⭐</span>
       <div class="icone-circulo">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="14" y="42" font-size="26" font-weight="800" fill="#00B894"
-            font-family="Baloo 2, cursive">5</text>
-          <path d="M30 32 H46" stroke="#009975" stroke-width="4" stroke-linecap="round" />
-          <path d="M40 26 L48 32 L40 38" stroke="#009975" stroke-width="4" stroke-linecap="round"
-            stroke-linejoin="round" fill="none" />
-          <text x="48" y="42" font-size="26" font-weight="800" fill="#55EFC4"
-            font-family="Baloo 2, cursive">6</text>
+          <!-- Primeiro número -->
+          <text x="6" y="42" font-size="26" font-weight="800" fill="#00B894" font-family="Baloo 2, cursive">2</text>
+          <!-- Sinal de mais (+) -->
+          <path d="M27 32 H39" stroke="#009975" stroke-width="4" stroke-linecap="round" />
+          <path d="M33 26 V38" stroke="#009975" stroke-width="4" stroke-linecap="round" />
+          <!-- Segundo número -->
+          <text x="44" y="42" font-size="26" font-weight="800" fill="#55EFC4" font-family="Baloo 2, cursive">3</text>
         </svg>
       </div>
       <div class="nome-jogo">Jogo<br>Adição</div>
     </button>
 
+
     <!-- Jogo 3: Quantos Tem? -->
-    <button class="card-jogo jogo-quantos" data-jogo="quantos" data-nome="Quantos Tem"
-      data-link="jogo-quantos.html">
+    <button class="card-jogo jogo-quantos" data-jogo="quantos" data-nome="Quantos Tem" data-link="jogo-quantos.html">
       <span class="estrela-feito">⭐</span>
       <div class="icone-circulo">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -423,7 +436,7 @@
           if (finalizado) return;
           finalizado = true;
           pimCirculo.classList.remove('falando');
-          try { synthesizer.close(); } catch (e) {}
+          try { synthesizer.close(); } catch (e) { }
           resolve();
         }
 

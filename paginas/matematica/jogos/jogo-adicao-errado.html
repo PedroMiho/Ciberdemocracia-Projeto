@@ -35,8 +35,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* centraliza vertical e horizontal */
         }
 
+        /* CARD BRANCO central com tudo dentro */
+        /* CARD BRANCO mais largo */
+        /* CARD BRANCO mais largo */
         .card {
             background: #fff;
             border-radius: 36px;
@@ -49,19 +53,25 @@
             align-items: center;
         }
 
+        /* ===== REGRA ÚNICA: 3 balas por fileira ===== */
+        /* Largura calculada: 3 balas (44px) + 2 espaços (6px) + padding (28px) ≈ 170px */
+
         .grupo,
         .prato {
             border-radius: 24px;
             padding: 14px;
             width: 170px;
+            /* largura fixa = cabem exatamente 3 balas */
             min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
+            /* quebra para a próxima linha após 3 */
             gap: 6px;
         }
 
+        /* cores de cada um */
         .grupo {
             background: #F5F3FF;
         }
@@ -71,18 +81,22 @@
             border: 4px dashed #C7BFFF;
         }
 
+        /* ===== BALAS: tamanho fixo para caber 3 por fileira ===== */
         .grupo .bala,
         .prato .bala {
             font-size: 30px;
             line-height: 1;
             flex: 0 0 44px;
+            /* largura fixa = 3 cabem na fileira */
             width: 44px;
             text-align: center;
         }
 
+        /* animação só na resposta */
         .prato .bala {
             animation: cai .35s ease;
         }
+
 
         .botao-som,
         .botao-voltar {
@@ -173,13 +187,27 @@
         }
 
         @keyframes flutua {
-            0%, 100% { transform: translateY(0) }
-            50% { transform: translateY(-6px) }
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-6px)
+            }
         }
 
         @keyframes pula {
-            0%, 100% { transform: translateY(0) scale(1) }
-            50% { transform: translateY(-4px) scale(1.08) }
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1)
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.08)
+            }
         }
 
         .titulo {
@@ -197,6 +225,25 @@
             margin: 10px 0 4px;
         }
 
+        /* grupos com fundo suave (já que o card é branco) */
+        .grupo {
+            background: #F5F3FF;
+            border-radius: 24px;
+            padding: 14px;
+            max-width: 200px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .grupo .bala {
+            font-size: 30px;
+            line-height: 1;
+        }
+
         .operador {
             font-size: 48px;
             font-weight: 800;
@@ -209,62 +256,87 @@
             color: var(--primaria);
         }
 
+        .prato {
+            background: #FCFBFF;
+            border: 4px dashed #C7BFFF;
+            border-radius: 24px;
+            padding: 14px;
+            min-width: 130px;
+            max-width: 240px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
         .prato.certo {
             border-color: var(--verde);
             background: #EAFBF3;
         }
 
+        .prato .bala {
+            font-size: 30px;
+            line-height: 1;
+            animation: cai .35s ease;
+        }
+
         @keyframes cai {
-            0% { transform: translateY(-20px) scale(.4); opacity: 0 }
-            100% { transform: translateY(0) scale(1); opacity: 1 }
+            0% {
+                transform: translateY(-20px) scale(.4);
+                opacity: 0
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1
+            }
         }
 
         .placar {
             color: #8A87A8;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            margin: 14px 0 6px;
+            margin: 8px 0;
         }
 
-        /* ===== NOVO: TECLADO NUMÉRICO ===== */
-        .teclado {
+        .controles {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin: 12px 0;
-            max-width: 560px;
+            gap: 16px;
+            margin: 14px 0;
         }
 
-        .btn-num {
-            width: 70px;
-            height: 70px;
-            border-radius: 22px;
+        .btn-redondo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             border: none;
-            font-size: 34px;
+            font-size: 42px;
             font-weight: 800;
-            color: var(--primaria);
-            background: #F5F3FF;
+            color: #fff;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(108, 92, 231, .15);
-            transition: transform .15s ease, background .15s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+            transition: transform .15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-num:hover {
+        .btn-mais {
+            background: linear-gradient(160deg, #55D6A0, #2EAE7E);
+        }
+
+        .btn-menos {
+            background: linear-gradient(160deg, #FF9F9F, #FF7675);
+        }
+
+        .btn-redondo:hover {
             transform: scale(1.08);
         }
 
-        .btn-num:active {
+        .btn-redondo:active {
             transform: scale(.9);
-        }
-
-        .btn-num.selecionado {
-            background: linear-gradient(160deg, #A29BFE, #6C5CE7);
-            color: #fff;
-            transform: scale(1.05);
         }
 
         .btn-acao {
@@ -300,9 +372,17 @@
         }
 
         @keyframes pop {
-            0% { transform: scale(0) }
-            70% { transform: scale(1.25) }
-            100% { transform: scale(1) }
+            0% {
+                transform: scale(0)
+            }
+
+            70% {
+                transform: scale(1.25)
+            }
+
+            100% {
+                transform: scale(1)
+            }
         }
     </style>
 </head>
@@ -317,6 +397,7 @@
     </button>
     <button class="botao-som" id="botaoSom" title="Ligar ou desligar a voz"></button>
 
+    <!-- TUDO dentro do card branco -->
     <div class="card">
         <div class="topo">
             <div class="pim-circulo" id="pimCirculo">
@@ -339,6 +420,7 @@
             <div class="titulo">Some as balas! 🍬</div>
         </div>
 
+        <!-- A conta: balas já aparecem prontas -->
         <div class="conta">
             <div class="grupo" id="grupoA"></div>
             <div class="operador">+</div>
@@ -347,10 +429,12 @@
             <div class="prato" id="prato"></div>
         </div>
 
-        <div class="placar" id="placar">Toque no número da resposta!</div>
+        <div class="placar" id="placar">Você colocou: 0 balas</div>
 
-        <!-- NOVO: teclado numérico -->
-        <div class="teclado" id="teclado"></div>
+        <div class="controles">
+            <button class="btn-redondo btn-menos" id="btnMenos">−</button>
+            <button class="btn-redondo btn-mais" id="btnMais">+</button>
+        </div>
 
         <button class="btn-acao" id="btnAcao">Conferir</button>
 
@@ -372,7 +456,8 @@
         const prato = document.getElementById('prato');
         const placar = document.getElementById('placar');
         const festa = document.getElementById('festa');
-        const teclado = document.getElementById('teclado');
+        const btnMais = document.getElementById('btnMais');
+        const btnMenos = document.getElementById('btnMenos');
         const btnAcao = document.getElementById('btnAcao');
 
         let somLigado = localStorage.getItem('somLigado') !== 'false';
@@ -403,30 +488,6 @@
 
         function bolinhas(qtd) { let html = ''; for (let i = 0; i < qtd; i++) html += '<span class="bala">🍬</span>'; return html; }
 
-        // Cria o teclado de 0 a 10 uma única vez
-        function criarTeclado() {
-            teclado.innerHTML = '';
-            for (let n = 0; n <= 10; n++) {
-                const btn = document.createElement('button');
-                btn.className = 'btn-num';
-                btn.textContent = n;
-                btn.dataset.valor = n;
-                btn.addEventListener('click', () => escolherNumero(n, btn));
-                teclado.appendChild(btn);
-            }
-        }
-
-        function escolherNumero(n, btn) {
-            if (acertou) return;
-            colocadas = n;
-            // destaca o botão selecionado
-            document.querySelectorAll('.btn-num').forEach(b => b.classList.remove('selecionado'));
-            btn.classList.add('selecionado');
-            // mostra as balas direto no prato
-            desenharPrato();
-            atualizarPlacar();
-        }
-
         function novaConta() {
             acertou = false;
             colocadas = 0;
@@ -439,19 +500,14 @@
             prato.classList.remove('certo');
             festa.classList.remove('show'); festa.textContent = '';
             btnAcao.textContent = 'Conferir';
-            document.querySelectorAll('.btn-num').forEach(b => b.classList.remove('selecionado'));
             atualizarPlacar();
         }
 
-        function atualizarPlacar() {
-            if (colocadas === 0) {
-                placar.textContent = 'Toque no número da resposta!';
-            } else {
-                placar.textContent = `Você escolheu: ${colocadas}`;
-            }
-        }
-
+        function atualizarPlacar() { placar.textContent = `Você colocou: ${colocadas} bala${colocadas === 1 ? '' : 's'}`; }
         function desenharPrato() { prato.innerHTML = bolinhas(colocadas); }
+
+        btnMais.addEventListener('click', () => { if (acertou) return; colocadas++; desenharPrato(); atualizarPlacar(); });
+        btnMenos.addEventListener('click', () => { if (acertou || colocadas === 0) return; colocadas--; desenharPrato(); atualizarPlacar(); });
 
         btnAcao.addEventListener('click', async () => {
             if (acertou) { novaConta(); await falar('Vamos para a próxima conta!'); return; }
@@ -463,9 +519,9 @@
                 btnAcao.textContent = 'Próxima ➜';
                 await falar(`Muito bem! ${a} mais ${b} é igual a ${resposta}!`);
             } else if (colocadas < resposta) {
-                await falar('Quase! Conte as balas e escolha um número maior.');
+                await falar('Quase! Conte as balas e coloque mais no resultado.');
             } else {
-                await falar('Opa! Esse número é grande demais. Tente um menor.');
+                await falar('Opa! Você colocou balas demais. Tire algumas.');
             }
         });
 
@@ -474,9 +530,8 @@
         });
 
         async function iniciar() {
-            criarTeclado();
             novaConta();
-            await falar('Conte as balas dos dois lados e toque no número da resposta!');
+            await falar('Conte as balas dos dois lados e coloque o total no resultado usando o botão verde!');
         }
         iniciar();
     </script>

@@ -58,22 +58,10 @@
       transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
 
-    .botao-som:hover {
-      transform: scale(1.08);
-    }
-
-    .botao-som:active {
-      transform: scale(0.92);
-    }
-
-    .botao-som svg {
-      width: 30px;
-      height: 30px;
-    }
-
-    .botao-som.mudo {
-      background: #FFE3E1;
-    }
+    .botao-som:hover { transform: scale(1.08); }
+    .botao-som:active { transform: scale(0.92); }
+    .botao-som svg { width: 30px; height: 30px; }
+    .botao-som.mudo { background: #FFE3E1; }
 
     /* ⬅️ Botão Voltar */
     .botao-voltar {
@@ -97,18 +85,9 @@
       transition: transform 0.18s ease;
     }
 
-    .botao-voltar:hover {
-      transform: scale(1.05);
-    }
-
-    .botao-voltar:active {
-      transform: scale(0.95);
-    }
-
-    .botao-voltar svg {
-      width: 26px;
-      height: 26px;
-    }
+    .botao-voltar:hover { transform: scale(1.05); }
+    .botao-voltar:active { transform: scale(0.95); }
+    .botao-voltar svg { width: 26px; height: 26px; }
 
     /* Cabeçalho com o Pim */
     .topo {
@@ -139,45 +118,20 @@
       animation: flutua 3.5s ease-in-out infinite;
     }
 
-    .pim-circulo.falando svg {
-      animation: pula 0.45s ease-in-out infinite;
-    }
+    .pim-circulo.falando svg { animation: pula 0.45s ease-in-out infinite; }
 
     @keyframes flutua {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-6px);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
     @keyframes pula {
-
-      0%,
-      100% {
-        transform: translateY(0) scale(1);
-      }
-
-      50% {
-        transform: translateY(-4px) scale(1.08);
-      }
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.08); }
     }
 
-    .titulo {
-      color: var(--texto);
-      font-size: 26px;
-      font-weight: 800;
-    }
-
-    .subtitulo {
-      color: #8A87A8;
-      font-size: 17px;
-      font-weight: 600;
-    }
+    .titulo { color: var(--texto); font-size: 26px; font-weight: 800; }
+    .subtitulo { color: #8A87A8; font-size: 17px; font-weight: 600; }
 
     /* Grade de jogos (3 cards) */
     .grade {
@@ -198,7 +152,7 @@
     .card-jogo {
       background: #fff;
       border-radius: 28px;
-      padding: 24px 16px;
+      padding: 24px 16px 20px;
       text-align: center;
       cursor: pointer;
       border: none;
@@ -216,9 +170,7 @@
       box-shadow: 0 18px 40px rgba(108, 92, 231, 0.25);
     }
 
-    .card-jogo:active {
-      transform: translateY(-2px) scale(0.98);
-    }
+    .card-jogo:active { transform: translateY(-2px) scale(0.98); }
 
     .card-jogo.destaque {
       transform: translateY(-6px) scale(1.03);
@@ -245,17 +197,41 @@
       line-height: 1.2;
     }
 
+    /* 🏷️ Etiqueta da área ABLLS-R */
+    .badge-ablls {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-ablls .letra {
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 8px;
+      padding: 1px 7px;
+      font-weight: 800;
+    }
+
     /* Cores por jogo */
     .jogo-inicial .icone-circulo { background: #D4F1FF; }
     .jogo-inicial { border-bottom: 6px solid #0984E3; }
+    .jogo-inicial .badge-ablls { background: #0984E3; }
 
     .jogo-descubra .icone-circulo { background: #FFE3E1; }
     .jogo-descubra { border-bottom: 6px solid #FF7675; }
+    .jogo-descubra .badge-ablls { background: #FF7675; }
 
     .jogo-montar .icone-circulo { background: #E8E4FF; }
     .jogo-montar { border-bottom: 6px solid #6C5CE7; }
+    .jogo-montar .badge-ablls { background: #6C5CE7; }
 
-    /* Estrelinha de "concluído" (opcional) */
+    /* Estrelinha de "concluído" */
     .estrela-feito {
       position: absolute;
       top: 12px;
@@ -264,9 +240,7 @@
       display: none;
     }
 
-    .card-jogo.concluido .estrela-feito {
-      display: block;
-    }
+    .card-jogo.concluido .estrela-feito { display: block; }
   </style>
 </head>
 
@@ -313,26 +287,29 @@
 
     <!-- Jogo 1: Descubra a Inicial -->
     <button class="card-jogo jogo-inicial" data-jogo="descubrainicial" data-nome="Descubra a Inicial"
-      data-link="jogo-descubrainicial.html">
+      data-link="jogo-descubrainicial.html" data-area="N" data-area-nome="Leitura">
       <span class="estrela-feito">⭐</span>
       <div class="icone-circulo">🅰️</div>
       <div class="nome-jogo">Descubra<br>a Inicial</div>
+      <span class="badge-ablls"><span class="letra">N</span> Leitura</span>
     </button>
 
     <!-- Jogo 2: Descubra a Palavra -->
     <button class="card-jogo jogo-descubra" data-jogo="descubrapalavra" data-nome="Descubra a Palavra"
-      data-link="jogo-descubrapalavra.html">
+      data-link="jogo-descubrapalavra.html" data-area="N" data-area-nome="Leitura">
       <span class="estrela-feito">⭐</span>
       <div class="icone-circulo">🔍</div>
       <div class="nome-jogo">Descubra<br>a Palavra</div>
+      <span class="badge-ablls"><span class="letra">N</span> Leitura</span>
     </button>
 
     <!-- Jogo 3: Monte a Palavra -->
     <button class="card-jogo jogo-montar" data-jogo="montepalavra" data-nome="Monte a Palavra"
-      data-link="jogo-montepalavra.html">
+      data-link="jogo-montepalavra.html" data-area="N" data-area-nome="Leitura">
       <span class="estrela-feito">⭐</span>
       <div class="icone-circulo">🔡</div>
       <div class="nome-jogo">Monte a<br>Palavra</div>
+      <span class="badge-ablls"><span class="letra">N</span> Leitura</span>
     </button>
 
   </div>
@@ -340,10 +317,17 @@
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
   <script>
     // ===== CREDENCIAIS (TROQUE pela sua chave!) =====
-    const AZURE_KEY = "7YseDwXlpfBRO2meYxBwULsbO5mNhv4uqxdUhXtwef1jRBmcGzXeJQQJ99CFACHrzpqXJ3w3AAAYACOG87Cv";
+    const AZURE_KEY = "SUA_CHAVE_AQUI";
     const AZURE_REGION = "northcentralus";
     const VOZ = "pt-BR-ThalitaNeural";
     // ================================================
+
+    // 📋 Referência das áreas do ABLLS-R usadas nesta tela
+    const AREAS_ABLLS = {
+      N: { nome: "Leitura", descricao: "Reconhecimento de letras e palavras" },
+      B: { nome: "Performance Visual", descricao: "Pareamento e memória visual" },
+      Q: { nome: "Motora Fina", descricao: "Precisão ao arrastar e tocar" }
+    };
 
     const pimCirculo = document.getElementById('pimCirculo');
     const botaoSom = document.getElementById('botaoSom');
@@ -417,7 +401,6 @@
       });
     }
 
-    // 🔆 Destaca cada card enquanto o Pim apresenta
     function destacar(jogo) {
       document.querySelectorAll('.card-jogo').forEach(c => c.classList.remove('destaque'));
       const card = document.querySelector(`.card-jogo[data-jogo="${jogo}"]`);
@@ -428,7 +411,6 @@
       document.querySelectorAll('.card-jogo').forEach(c => c.classList.remove('destaque'));
     }
 
-    // 🎤 Apresentação do Pim ao abrir a tela
     async function apresentar() {
       await falar('Vamos brincar com as palavras! Escolha um jogo.');
       await pausa(300);
@@ -443,7 +425,6 @@
       limparDestaque();
     }
 
-    // ✅ Marca jogos já concluídos (lê do localStorage)
     function marcarConcluidos() {
       document.querySelectorAll('.card-jogo').forEach(card => {
         const feito = localStorage.getItem('jogo_' + card.dataset.jogo + '_concluido');
@@ -451,25 +432,34 @@
       });
     }
 
-    // 🚀 Vai para o jogo
     async function abrirJogo(card) {
       if (navegando) return;
       navegando = true;
       limparDestaque();
       card.classList.add('destaque');
 
+      // 📊 Registra a área ABLLS-R praticada (útil para a pesquisa/relatório)
+      registrarPratica(card.dataset.area);
+
       await falar(`Vamos jogar ${card.dataset.nome}!`);
       await pausa(400);
       window.location.href = `jogos/${card.dataset.link}`;
+    }
+
+    // 📈 Guarda quantas vezes cada área do ABLLS-R foi praticada
+    function registrarPratica(area) {
+      if (!area) return;
+      const chave = 'ablls_pratica_' + area;
+      const total = parseInt(localStorage.getItem(chave) || '0', 10) + 1;
+      localStorage.setItem(chave, total);
     }
 
     document.querySelectorAll('.card-jogo').forEach(card => {
       card.addEventListener('click', () => abrirJogo(card));
     });
 
-    // ⬅️ Voltar para a tela de matérias
     botaoVoltar.addEventListener('click', () => {
-      window.location.href = '../competencias.html'; // ajuste o caminho se precisar
+      window.location.href = '../competencias.html';
     });
 
     // Início
