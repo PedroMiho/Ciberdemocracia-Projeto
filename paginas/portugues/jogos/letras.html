@@ -144,6 +144,7 @@
     <div id="pontos">🎈 <span id="placar">0</span></div>
   </div>
 
+<script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 <script>
   const jogo     = document.getElementById('jogo');
   const pessoa   = document.getElementById('pessoa');
@@ -157,6 +158,7 @@
 
   let baloes = [];
   let placar = 0, jogando = false, indiceAtual = 0;
+  let falando = false;   // 🔒 trava a digitação enquanto a IA fala
 
   function criarNuvens() {
     for (let i = 0; i < 6; i++) {
@@ -220,7 +222,7 @@
     if (alvo) {
       alvo.classList.add('ativo');
       moverPessoaPara(alvo);
-      falarLetra(alvo.dataset.letra);
+      falarLetra(alvo.dataset.letra);   // trava/libera sozinha
     } else {
       mensagem.textContent = '🎉 Muito bem! Você conseguiu! 🎉';
       mensagem.style.display = 'block';
@@ -231,6 +233,7 @@
 
   document.addEventListener('keydown', (e) => {
     const tecla = e.key.toUpperCase();
+
     if (!jogando) {
       jogando = true; placar = 0; placarEl.textContent = 0;
       mensagem.style.display = 'none';
@@ -238,6 +241,9 @@
       montarBaloes();
       return;
     }
+
+    if (falando) return;   // ⛔ IA ainda está falando: ignora a tecla
+
     const alvo = baloes[indiceAtual];
     if (alvo && tecla === alvo.dataset.letra) acertou(alvo);
   });
@@ -270,21 +276,35 @@
     synthesizer = new SpeechSDK.SpeechSynthesizer(cfg);
   }
 
+  // Fala a letra e SÓ LIBERA a digitação quando terminar de falar
   function falarLetra(letra) {
-    if (synthesizer) {
-      const ssml = `
-        <speak version="1.0" xml:lang="pt-BR">
-          <voice name="pt-BR-FranciscaNeural">
-            <prosody rate="-15%" pitch="+8%">${letra}</prosody>
-          </voice>
-        </speak>`;
-      synthesizer.speakSsmlAsync(ssml);
-    } else if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
-      const f = new SpeechSynthesisUtterance(letra);
-      f.lang = 'pt-BR'; f.rate = 0.8; f.pitch = 1.3;
-      speechSynthesis.speak(f);
-    }
+    return new Promise(resolve => {
+      falando = true;   // 🔒 trava
+
+      if (synthesizer) {
+        const ssml = `
+          <speak version="1.0" xml:lang="pt-BR">
+            <voice name="pt-BR-FranciscaNeural">
+              <prosody rate="-15%" pitch="+8%">${letra}</prosody>
+            </voice>
+          </speak>`;
+        synthesizer.speakSsmlAsync(ssml,
+          (r) => {
+            const dur = (r.audioDuration ? r.audioDuration / 10000 : 600) + 200;
+            setTimeout(() => { falando = false; resolve(); }, dur);  // 🔓 libera
+          },
+          (e) => { console.error(e); falando = false; resolve(); }
+        );
+      } else if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        const f = new SpeechSynthesisUtterance(letra);
+        f.lang = 'pt-BR'; f.rate = 0.8; f.pitch = 1.3;
+        f.onend = () => { falando = false; resolve(); };  // 🔓 libera ao terminar
+        speechSynthesis.speak(f);
+      } else {
+        falando = false; resolve();
+      }
+    });
   }
 
   function tocarSomAcerto() {
@@ -305,7 +325,5 @@
   window.addEventListener('resize', () => { if (jogando) destacarAtual(); });
   window.addEventListener('load', initAzure);
 </script>
-
-<script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 </body>
 </html>
