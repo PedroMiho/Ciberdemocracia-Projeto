@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toque na Letra</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primaria: #6C5CE7;
+            --texto: #4A4A68;
+        }
+
+        * {
+            font-family: 'Baloo 2', cursive;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 20% 20%, #E8E4FF 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, #D4F1FF 0%, transparent 50%),
+                linear-gradient(160deg, #F5F3FF 0%, #EBF7FF 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao-som,
+        .botao-voltar {
+            position: fixed;
+            top: 18px;
+            z-index: 500;
+            border: none;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(108, 92, 231, 0.25);
+            transition: transform 0.18s ease;
+        }
+
+        .botao-som {
+            right: 18px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao-som svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .botao-som.mudo {
+            background: #FFE3E1;
+        }
+
+        .botao-voltar {
+            left: 18px;
+            height: 56px;
+            padding: 0 22px 0 16px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primaria);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .botao-som:hover,
+        .botao-voltar:hover {
+            transform: scale(1.06);
+        }
+
+        .botao-som:active,
+        .botao-voltar:active {
+            transform: scale(0.92);
+        }
+
+        .botao-voltar svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .pim-circulo {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #A29BFE 0%, #6C5CE7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.35);
+            margin-bottom: 10px;
+        }
+
+        .pim-circulo svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .pim-circulo.falando svg {
+            animation: pula 0.45s ease-in-out infinite;
+        }
+
+        @keyframes pula {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.08);
+            }
+        }
+
+        .palco {
+            background: #fff;
+            border-radius: 36px;
+            padding: 24px 22px 28px;
+            box-shadow: 0 16px 44px rgba(108, 92, 231, 0.18);
+            max-width: 640px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .titulo-jogo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primaria);
+        }
+
+        .nivel-info {
+            font-size: 17px;
+            font-weight: 700;
+            color: #8A87A8;
+        }
+
+        .estrelas {
+            display: flex;
+            gap: 8px;
+        }
+
+        .estrela {
+            font-size: 24px;
+            filter: grayscale(1);
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .estrela.ganha {
+            filter: none;
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .mensagem {
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--texto);
+            min-height: 28px;
+        }
+
+        /* comando: a letra que a criança deve achar */
+        .comando-letra {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
+            background: linear-gradient(160deg, #A29BFE 0%, #6C5CE7 100%);
+            color: #fff;
+            font-size: 54px;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.35);
+        }
+
+        /* grade de letras para tocar */
+        .grade {
+            display: grid;
+            gap: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .letra {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            min-width: 90px;
+            border-radius: 24px;
+            border: 4px solid #E8E4FF;
+            background: #F5F3FF;
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--primaria);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .letra:hover {
+            transform: scale(1.05);
+            border-color: #C5BEFF;
+        }
+
+        .letra:active {
+            transform: scale(0.94);
+        }
+
+        .letra.certa {
+            border-style: solid;
+            border-color: #00B894;
+            background: #D5F5EC;
+            color: #009975;
+            animation: pulinho 0.5s ease;
+        }
+
+        .letra.errada {
+            animation: tremor 0.4s ease;
+            border-color: #FF7675;
+            background: #FFE3E1;
+        }
+
+        @keyframes pulinho {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.18);
+            }
+        }
+
+        @keyframes tremor {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        .grade.travado {
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            .letra {
+                font-size: 42px;
+                min-width: 70px;
+            }
+
+            .comando-letra {
+                width: 74px;
+                height: 74px;
+                font-size: 44px;
+            }
+        }
+
+        .controles {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 26px;
+            padding: 14px 28px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transition: transform 0.16s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+            transform: none;
+        }
+
+        .btn-iniciar {
+            background: linear-gradient(160deg, #00B894 0%, #009975 100%);
+        }
+
+        .btn-repetir {
+            background: linear-gradient(160deg, #A29BFE 0%, #6C5CE7 100%);
+        }
+
+        .btn-ouvir {
+            background: linear-gradient(160deg, #74B9FF 0%, #0984E3 100%);
+        }
+
+        .festa {
+            font-size: 56px;
+            display: none;
+        }
+
+        .festa.aparece {
+            display: block;
+            animation: festa 0.8s ease infinite alternate;
+        }
+
+        @keyframes festa {
+            0% {
+                transform: scale(1) rotate(-6deg);
+            }
+
+            100% {
+                transform: scale(1.15) rotate(6deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="botao-voltar" id="botaoVoltar" title="Voltar">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 5 L8 12 L15 19" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+        Voltar
+    </button>
+
+    <button class="botao-som" id="botaoSom" title="Ligar ou desligar a voz"></button>
+
+    <div class="pim-circulo" id="pimCirculo">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="18" x2="50" y2="6" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+            <circle cx="50" cy="5" r="5" fill="#FDCB6E" />
+            <rect x="20" y="18" width="60" height="50" rx="22" fill="#fff" />
+            <circle cx="38" cy="42" r="8" fill="#6C5CE7" />
+            <circle cx="62" cy="42" r="8" fill="#6C5CE7" />
+            <circle cx="40" cy="40" r="3" fill="#fff" />
+            <circle cx="64" cy="40" r="3" fill="#fff" />
+            <path d="M42 56 Q50 62 58 56" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round" fill="none" />
+            <rect x="34" y="68" width="32" height="22" rx="10" fill="#A29BFE" />
+            <circle cx="50" cy="79" r="4" fill="#FDCB6E" />
+        </svg>
+    </div>
+
+    <div class="palco">
+
+        <div class="titulo-jogo">Toque na Letra 🔤</div>
+
+        <div class="nivel-info" id="nivelInfo">Nível 1</div>
+
+        <div class="estrelas" id="estrelas"></div>
+
+        <div class="mensagem" id="mensagem">Toque na letra que o Pim pedir!</div>
+
+        <div class="comando-letra" id="comandoLetra">?</div>
+
+        <div class="grade" id="grade"></div>
+
+        <div class="festa" id="festa">🎉🌟🎉</div>
+
+        <div class="controles">
+            <button class="btn btn-iniciar" id="btnIniciar">▶️ Começar</button>
+            <button class="btn btn-ouvir" id="btnOuvir" style="display:none;">🔊 Ouvir de novo</button>
+            <button class="btn btn-repetir" id="btnRepetir" style="display:none;">🔁 Jogar de novo</button>
+        </div>
+
+    </div>
+
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+    <script>
+        // ===== CREDENCIAIS (TROQUE pela sua chave!) =====
+        const AZURE_KEY = "7YseDwXlpfBRO2meYxBwULsbO5mNhv4uqxdUhXtwef1jRBmcGzXeJQQJ99CFACHrzpqXJ3w3AAAYACOG87Cv";
+        const AZURE_REGION = "northcentralus";
+        const VOZ = "pt-BR-ThalitaNeural";
+        // ================================================
+
+        const pimCirculo = document.getElementById('pimCirculo');
+        const botaoSom = document.getElementById('botaoSom');
+        const botaoVoltar = document.getElementById('botaoVoltar');
+        const grade = document.getElementById('grade');
+        const comandoLetraEl = document.getElementById('comandoLetra');
+        const mensagem = document.getElementById('mensagem');
+        const nivelInfoEl = document.getElementById('nivelInfo');
+        const estrelasEl = document.getElementById('estrelas');
+        const festa = document.getElementById('festa');
+        const btnIniciar = document.getElementById('btnIniciar');
+        const btnOuvir = document.getElementById('btnOuvir');
+        const btnRepetir = document.getElementById('btnRepetir');
+
+        let somLigado = localStorage.getItem('somLigado') !== 'false';
+        let rodando = false;
+        let podeResponder = false;
+
+        // som "falado" de cada letra (fonética suave)
+        const SOM_LETRA = {
+            A: 'Aaa', B: 'Bê', C: 'Cê', D: 'Dê', E: 'Eee', F: 'Éfe',
+            G: 'Gê', H: 'Agá', I: 'Iii', J: 'Jota', K: 'Cá', L: 'Éle',
+            M: 'Eme', N: 'Ene', O: 'Óoo', P: 'Pê', Q: 'Quê', R: 'Érre',
+            S: 'Esse', T: 'Tê', U: 'Uuu', V: 'Vê', W: 'Dáblio',
+            X: 'Xis', Y: 'Ípsilon', Z: 'Zê'
+        };
+
+        // ===== NÍVEIS (baseado no ABLLS-R Q1) =====
+        const NIVEIS = [
+            { nome: 'Nível 1', letras: ['A', 'B', 'C', 'D', 'E'], opcoes: 3 },
+            { nome: 'Nível 2', letras: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'], opcoes: 4 },
+            { nome: 'Nível 3', letras: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'], opcoes: 6 },
+            { nome: 'Nível 4', letras: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), opcoes: 6 }
+        ];
+
+        const TOTAL_RODADAS = 5;
+        let rodadaAtual = 0;
+        let nivelAtual = 0;
+        let letraAlvo = '';
+
+        const ICONE_SOM_LIGADO = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#6C5CE7"/>
+        <path d="M16 9 a4 4 0 0 1 0 6" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M18.5 6.5 a8 8 0 0 1 0 11" stroke="#A29BFE" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>`;
+        const ICONE_SOM_MUDO = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#D63031"/>
+        <line x1="16" y1="9" x2="22" y2="15" stroke="#D63031" stroke-width="2" stroke-linecap="round"/>
+        <line x1="22" y1="9" x2="16" y2="15" stroke="#D63031" stroke-width="2" stroke-linecap="round"/>
+      </svg>`;
+
+        function atualizarBotaoSom() {
+            botaoSom.innerHTML = somLigado ? ICONE_SOM_LIGADO : ICONE_SOM_MUDO;
+            botaoSom.classList.toggle('mudo', !somLigado);
+        }
+        atualizarBotaoSom();
+        botaoSom.addEventListener('click', () => {
+            somLigado = !somLigado;
+            localStorage.setItem('somLigado', somLigado);
+            atualizarBotaoSom();
+        });
+
+        function pausa(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function falar(texto) {
+            return new Promise(resolve => {
+                if (!somLigado) { resolve(); return; }
+                pimCirculo.classList.add('falando');
+                const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_KEY, AZURE_REGION);
+                speechConfig.speechSynthesisVoiceName = VOZ;
+                const synth = new SpeechSDK.SpeechSynthesizer(speechConfig);
+                let fim = false;
+                function finalizar() {
+                    if (fim) return; fim = true;
+                    pimCirculo.classList.remove('falando');
+                    try { synth.close(); } catch (e) { }
+                    resolve();
+                }
+                const ssml = `
+          <speak version='1.0' xml:lang='pt-BR'>
+            <voice name='${VOZ}'>
+              <prosody rate='-8%' pitch='+6%'>${texto}</prosody>
+            </voice>
+          </speak>`;
+                synth.speakSsmlAsync(ssml,
+                    (r) => {
+                        if (r.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted)
+                            setTimeout(finalizar, r.audioDuration / 10000 + 250);
+                        else finalizar();
+                    },
+                    (e) => { console.error(e); finalizar(); }
+                );
+            });
+        }
+
+        function embaralhar(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function criarEstrelas() {
+            estrelasEl.innerHTML = '';
+            for (let i = 0; i < TOTAL_RODADAS; i++) {
+                const e = document.createElement('span');
+                e.className = 'estrela';
+                e.textContent = '⭐';
+                e.dataset.i = i;
+                estrelasEl.appendChild(e);
+            }
+        }
+        function ganharEstrela(i) {
+            const e = estrelasEl.querySelector(`.estrela[data-i="${i}"]`);
+            if (e) e.classList.add('ganha');
+        }
+
+        // define o nível conforme a rodada (sobe a dificuldade gradualmente)
+        function definirNivel() {
+            if (rodadaAtual <= 1) nivelAtual = 0;
+            else if (rodadaAtual === 2) nivelAtual = 1;
+            else if (rodadaAtual === 3) nivelAtual = 2;
+            else nivelAtual = 3;
+            nivelInfoEl.textContent = NIVEIS[nivelAtual].nome;
+        }
+
+        // gera as opções: a certa + distratoras
+        function gerarOpcoes(certa, qtd, banco) {
+            const set = new Set([certa]);
+            const outras = embaralhar(banco.filter(l => l !== certa));
+            for (const l of outras) {
+                if (set.size >= qtd) break;
+                set.add(l);
+            }
+            return embaralhar([...set]);
+        }
+
+        async function falarEnunciado() {
+            await falar(`Toque na letra ${SOM_LETRA[letraAlvo]}.`);
+        }
+
+        async function montarRodada() {
+            podeResponder = false;
+            grade.classList.add('travado');
+            festa.classList.remove('aparece');
+
+            definirNivel();
+            const nivel = NIVEIS[nivelAtual];
+
+            // sorteia a letra-alvo
+            letraAlvo = nivel.letras[Math.floor(Math.random() * nivel.letras.length)];
+            comandoLetraEl.textContent = letraAlvo;
+
+            mensagem.textContent = 'Qual é essa letra? Toque nela! 👆';
+
+            // monta a grade
+            grade.innerHTML = '';
+            const opcoes = gerarOpcoes(letraAlvo, nivel.opcoes, nivel.letras);
+            const colunas = Math.min(opcoes.length, 3);
+            grade.style.gridTemplateColumns = `repeat(${colunas}, minmax(70px, 110px))`;
+
+            opcoes.forEach(L => {
+                const item = document.createElement('div');
+                item.className = 'letra';
+                item.textContent = L;
+                item.dataset.letra = L;
+                item.addEventListener('click', () => verificar(L, item));
+                grade.appendChild(item);
+            });
+
+            await pausa(300);
+            await falarEnunciado();
+
+            podeResponder = true;
+            grade.classList.remove('travado');
+        }
+
+        async function verificar(letra, item) {
+            if (!podeResponder) return;
+            podeResponder = false;
+            grade.classList.add('travado');
+
+            if (letra === letraAlvo) {
+                item.classList.add('certa');
+                ganharEstrela(rodadaAtual);
+                mensagem.textContent = `Isso! Essa é a letra ${letraAlvo}! 🎉`;
+                await falar(`Muito bem! Essa é a letra ${SOM_LETRA[letraAlvo]}!`);
+                await pausa(500);
+                rodadaAtual++;
+                if (rodadaAtual >= TOTAL_RODADAS) terminarJogo();
+                else montarRodada();
+            } else {
+                item.classList.add('errada');
+                mensagem.textContent = 'Quase! Tente outra letra 💜';
+                await falar(`Essa é a letra ${SOM_LETRA[letra]}. Vamos procurar a letra ${SOM_LETRA[letraAlvo]}!`);
+                await pausa(500);
+                item.classList.remove('errada');
+                podeResponder = true;
+                grade.classList.remove('travado');
+            }
+        }
+
+        async function terminarJogo() {
+            rodando = false;
+            mensagem.textContent = 'Você acertou todas as letras! Parabéns! 🎉';
+            comandoLetraEl.textContent = '🏆';
+            grade.innerHTML = '';
+            festa.classList.add('aparece');
+            await falar('Parabéns! Você encontrou todas as letras! Você é incrível!');
+            localStorage.setItem('jogo_toquenaletra_concluido', 'true');
+            btnOuvir.style.display = 'none';
+            btnRepetir.style.display = 'flex';
+            btnIniciar.disabled = false;
+        }
+
+        async function jogar() {
+            rodando = true;
+            rodadaAtual = 0;
+            comandoLetraEl.textContent = '?';
+            btnIniciar.disabled = true;
+            btnRepetir.style.display = 'none';
+            btnOuvir.style.display = 'flex';
+            criarEstrelas();
+            await falar('Vamos brincar com as letras! Eu vou pedir uma letra e você toca nela.');
+            montarRodada();
+        }
+
+        btnIniciar.addEventListener('click', () => { if (!rodando) jogar(); });
+        btnRepetir.addEventListener('click', () => jogar());
+        btnOuvir.addEventListener('click', () => { if (rodando) falarEnunciado(); });
+
+        botaoVoltar.addEventListener('click', () => {
+            rodando = false;
+            window.location.href = '../paginaportugues.html';
+        });
+
+        // estado inicial
+        criarEstrelas();
+    </script>
+
+</body>
+
+</html>
